@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "The Fright House";
+  src: url("/fonts/THEFRIGHTHOUSEDEMO.OTF") format("opentype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #110d0c;
+  --foreground: #f1e6ca;
 }
 
 @theme inline {
@@ -12,15 +20,254 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
 }
 
 body {
+  margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "The Fright House", Georgia, serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.blackwood-page {
+  min-height: 100%;
+  overflow: clip;
+  background: var(--background);
+}
+
+.hero-stage {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: #171011;
+}
+
+.room-layer,
+.sky-layer,
+.house-art {
+  position: absolute;
+  inset: 0;
+}
+
+.room-layer {
+  z-index: 0;
+  overflow: hidden;
+  transform-origin: 50% 50%;
+}
+
+.room-layer__image,
+.sky-layer__image,
+.house-art__mask {
+  object-fit: cover;
+}
+
+.room-layer__image {
+  object-position: center;
+}
+
+.sky-layer {
+  z-index: 1;
+  transform-origin: 50% 50%;
+}
+
+.sky-layer__image {
+  object-position: center;
+}
+
+.hero-wordmark {
+  position: absolute;
+  z-index: 2;
+  top: 43%;
+  left: 50%;
+  display: block;
+  width: 46.2vw;
+  max-width: 770px;
+  height: auto;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+.house-art {
+  z-index: 3;
+  transform-origin: 50% 82%;
+  will-change: transform;
+}
+
+.house-art__mask {
+  z-index: 1;
+  object-position: center;
+}
+
+.hero-nav {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: 1fr minmax(150px, 22vw) 1fr;
+  align-items: center;
+  width: 100%;
+  min-height: 88px;
+  padding: 0 clamp(24px, 5vw, 84px);
+  color: #f3e8cf;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.hero-nav__links {
+  display: flex;
+  align-items: center;
+  gap: clamp(24px, 4vw, 64px);
+}
+
+.hero-nav__brand-slot {
+  width: 100%;
+  height: 38px;
+}
+
+.hero-nav__register {
+  justify-self: end;
+  padding: 13px 17px;
+  border: 1px solid rgb(243 232 207 / 58%);
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.hero-nav__register:hover {
+  background: #f3e8cf;
+  color: #171011;
+}
+
+.scroll-hint {
+  position: absolute;
+  z-index: 5;
+  right: 0;
+  bottom: 32px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: #f3e8cf;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.scroll-hint__arrow {
+  width: 1px;
+  height: 27px;
+  background: currentColor;
+}
+
+.story-section {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  place-items: center;
+  padding: 120px 24px;
+  background:
+    linear-gradient(180deg, rgb(17 13 12 / 25%), #110d0c 55%),
+    url("/images/room.webp") center / cover,
+    #110d0c;
+  text-align: center;
+}
+
+.story-section__content {
+  width: min(100%, 680px);
+}
+
+.eyebrow {
+  margin: 0 0 24px;
+  color: #bf9b73;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.story-section h1 {
+  margin: 0;
+  font-family: "The Fright House", Georgia, serif;
+  font-size: clamp(42px, 7vw, 88px);
+  font-weight: 400;
+  line-height: 0.98;
+}
+
+.story-section__intro {
+  max-width: 510px;
+  margin: 28px auto 0;
+  color: rgb(241 230 202 / 76%);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.story-section__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px 32px;
+  margin-top: 36px;
+  color: #f1e6ca;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.story-section__links a {
+  padding-bottom: 7px;
+  border-bottom: 1px solid rgb(241 230 202 / 52%);
+}
+
+@media (max-width: 640px) {
+  .hero-wordmark {
+    top: 43%;
+    width: 92vw;
+  }
+
+  .hero-nav {
+    grid-template-columns: 1fr minmax(100px, 34vw) 1fr;
+    min-height: 72px;
+    padding: 0 16px;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+  }
+
+  .hero-nav__links--left {
+    display: none;
+  }
+
+  .hero-nav__brand-slot {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .hero-nav__register {
+    grid-column: 3;
+    grid-row: 1;
+    padding: 11px 10px;
+  }
+
+  .story-section {
+    padding: 96px 24px;
+  }
+
+  .story-section__intro {
+    font-size: 14px;
+  }
 }
