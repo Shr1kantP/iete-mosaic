@@ -1,11 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
-import HoloCard from "../components/HoloCard";
+import Link from "next/link";
+import { createPortal } from "react-dom";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [menuPortalRoot, setMenuPortalRoot] = useState<HTMLElement | null>(null);
   const stageRef = useRef<HTMLElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuCloseButtonRef = useRef<HTMLButtonElement>(null);
+  const restoreMenuFocusRef = useRef(false);
   const wordmarkRef = useRef<HTMLImageElement>(null);
   const brandSlotRef = useRef<HTMLDivElement>(null);
   const houseRef = useRef<HTMLDivElement>(null);
@@ -13,7 +19,10 @@ export default function Home() {
   const skyImageFrameRef = useRef<HTMLDivElement>(null);
   const roomRef = useRef<HTMLDivElement>(null);
   const scrollHintRef = useRef<HTMLDivElement>(null);
-  const cardWrapperRefs = useRef<HTMLDivElement[]>([]);
+
+  useEffect(() => {
+    setMenuPortalRoot(document.body);
+  }, []);
 
   useEffect(() => {
     let disposed = false;
@@ -33,8 +42,6 @@ export default function Home() {
       const skyImageFrame = skyImageFrameRef.current;
       const room = roomRef.current;
       const scrollHint = scrollHintRef.current;
-      const cardWrappers = cardWrapperRefs.current.filter(Boolean);
-
       if (
         !stage ||
         !wordmark ||
@@ -48,14 +55,17 @@ export default function Home() {
         return;
       }
 
-      const mobileLayout = window.matchMedia("(max-width: 640px)").matches;
-
       const context = gsap.context(() => {
         const wordmarkTarget = () => {
           const stageBounds = stage.getBoundingClientRect();
           const slotBounds = brandSlot.getBoundingClientRect();
-          const startCenterX = stageBounds.width / 2;
-          const startCenterY = stageBounds.height * 0.43;
+          const wordmarkStyles = window.getComputedStyle(wordmark);
+          const resolvePosition = (value: string, dimension: number) =>
+            value.endsWith("%")
+              ? (Number.parseFloat(value) / 100) * dimension
+              : Number.parseFloat(value);
+          const startCenterX = resolvePosition(wordmarkStyles.left, stageBounds.width);
+          const startCenterY = resolvePosition(wordmarkStyles.top, stageBounds.height);
           const targetCenterX =
             slotBounds.left - stageBounds.left + slotBounds.width / 2;
           const targetCenterY =
@@ -64,12 +74,14 @@ export default function Home() {
           return {
             x: targetCenterX - startCenterX,
             y: targetCenterY - startCenterY,
-            scale: (slotBounds.width * 0.7) / wordmark.offsetWidth,
+            scale: slotBounds.height / wordmark.offsetHeight,
           };
         };
 
         gsap.set(wordmark, {
-          ...(mobileLayout ? { x: 0, y: 0, scale: 1 } : wordmarkTarget()),
+          x: 0,
+          y: 0,
+          scale: 1,
           transformOrigin: "50% 50%",
         });
         gsap.set(house, {
@@ -79,14 +91,11 @@ export default function Home() {
         });
         gsap.set(sky, { scale: 1, opacity: 1, willChange: "transform" });
         gsap.set(room, { scale: 0.9, opacity: 1, willChange: "transform" });
-        gsap.set(cardWrappers, { autoAlpha: 0, y: 80 });
-
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
           gsap.set(wordmark, wordmarkTarget());
           gsap.set([house, sky], { opacity: 0 });
-          gsap.set(room, { scale: 1, opacity: 0 });
+          gsap.set(room, { scale: 1, opacity: 1 });
           gsap.set(scrollHint, { opacity: 0 });
-          gsap.set(cardWrappers, { autoAlpha: 1, y: 0 });
           return;
         }
 
@@ -108,8 +117,8 @@ export default function Home() {
           gsap.set(pinSpacer, { pointerEvents: "none" });
         }
 
-        if (mobileLayout) {
-          timeline.to(
+        timeline
+          .to(
             wordmark,
             {
               x: () => wordmarkTarget().x,
@@ -119,10 +128,7 @@ export default function Home() {
               ease: "power2.inOut",
             },
             0,
-          );
-        }
-
-        timeline
+          )
           .to(
             house,
             { scale: 1.3, duration: 1.6, ease: "power2.inOut" },
@@ -136,19 +142,7 @@ export default function Home() {
           .to(house, { scale: 32.5, duration: 1.4, ease: "power2.inOut" }, 1.6)
           .to(sky, { scale: 1.16, opacity: 0, duration: 1.4, ease: "power2.inOut" }, 1.6)
           .to(room, { scale: 1, duration: 1.4, ease: "power2.inOut" }, 1.6)
-          .to(house, { opacity: 0, duration: 1, ease: "power2.out" }, 3)
-          .to(room, { opacity: 0, duration: 1, ease: "power2.out" }, 3)
-          .to(
-            cardWrappers,
-            {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.55,
-              stagger: 0.08,
-              ease: "power2.out",
-            },
-            3,
-          );
+          .to(house, { opacity: 0, duration: 1, ease: "power2.out" }, 3);
       }, stage);
 
       let refreshFrame = 0;
@@ -175,8 +169,92 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        restoreMenuFocusRef.current = true;
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      mobileMenuCloseButtonRef.current?.focus();
+    } else if (restoreMenuFocusRef.current) {
+      mobileMenuButtonRef.current?.focus();
+      restoreMenuFocusRef.current = false;
+    }
+  }, [isMobileMenuOpen]);
+
+  const closeMobileMenu = (restoreFocus = true) => {
+    restoreMenuFocusRef.current = restoreFocus;
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <main className="blackwood-page">
+      <nav className="hero-nav" aria-label="Main navigation">
+        <button
+          ref={mobileMenuButtonRef}
+          className="hero-nav__mobile-menu"
+          type="button"
+          aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="hero-mobile-menu"
+          onClick={() => {
+            if (isMobileMenuOpen) restoreMenuFocusRef.current = true;
+            setIsMobileMenuOpen((open) => !open);
+          }}
+        >
+          <span
+            className={`hero-nav__mobile-menu-icon${isMobileMenuOpen ? " is-open" : ""}`}
+            aria-hidden="true"
+          >
+            <span />
+            <span />
+            <span />
+          </span>
+        </button>
+        <div className="hero-nav__links hero-nav__links--left">
+          <a href="/rules" aria-label="Rules">
+            <Image
+              src="/images/navbar/button-1-rules.svg"
+              alt="Rules"
+              width={67}
+              height={26}
+              priority
+            />
+          </a>
+          <a href="/rules#faq" aria-label="Frequently asked questions">
+            <Image
+              src="/images/navbar/button-2-faq.svg"
+              alt="FAQ"
+              width={43}
+              height={28}
+              priority
+            />
+          </a>
+        </div>
+        <div className="hero-nav__brand-slot" ref={brandSlotRef} aria-hidden="true" />
+        <div className="hero-nav__links hero-nav__links--right">
+          <a className="hero-nav__register" href="/rules#register" aria-label="Register now">
+            <Image
+              src="/images/navbar/button-3-register.svg"
+              alt="Register now"
+              width={158}
+              height={58}
+              priority
+            />
+          </a>
+        </div>
+      </nav>
+
       <section
         className="hero-stage"
         ref={stageRef}
@@ -229,92 +307,106 @@ export default function Home() {
           </div>
         </div>
 
-        <nav className="hero-nav" aria-label="Main navigation">
-          <a className="hero-nav__mobile-menu" href="#rules" aria-label="Menu">
-            Menu
-          </a>
-          <div className="hero-nav__links hero-nav__links--left">
-            <a href="#rules" aria-label="Rules">
-              <Image
-                src="/images/navbar/button-1-rules.svg"
-                alt="Rules"
-                width={67}
-                height={26}
-                priority
-              />
-            </a>
-            <a href="#faq" aria-label="Frequently asked questions">
-              <Image
-                src="/images/navbar/button-2-faq.svg"
-                alt="FAQ"
-                width={43}
-                height={28}
-                priority
-              />
-            </a>
-          </div>
-          <div className="hero-nav__brand-slot" ref={brandSlotRef} aria-hidden="true" />
-          <a className="hero-nav__register" href="#register" aria-label="Register now">
-            <Image
-              src="/images/navbar/button-3-register.svg"
-              alt="Register now"
-              width={158}
-              height={58}
-              priority
-            />
-          </a>
-        </nav>
-
         <div className="scroll-hint" ref={scrollHintRef} aria-hidden="true">
           <span>Scroll</span>
           <span className="scroll-hint__arrow" />
         </div>
       </section>
 
-      <section className="story-section" id="rules" aria-label="Blackwood House room">
-        <div className="story-section__content">
-          <p className="eyebrow">A place with a past</p>
-          <div className="room-cards">
-            {Array.from({ length: 5 }, (_, index) => (
-              <div
-                className={`room-card-wrap room-card-wrap--${index + 1}`}
-                key={index + 1}
-                ref={(element) => {
-                  if (element) cardWrapperRefs.current[index] = element;
-                }}
+      {menuPortalRoot &&
+        createPortal(
+          <div
+            className={`hero-mobile-menu${isMobileMenuOpen ? " is-open" : ""}`}
+            id="hero-mobile-menu"
+            aria-hidden={!isMobileMenuOpen}
+            inert={!isMobileMenuOpen}
+          >
+            <button
+              className="hero-mobile-menu__backdrop"
+              type="button"
+              aria-label="Close navigation menu"
+              tabIndex={-1}
+              onClick={() => closeMobileMenu()}
+            />
+            <div className="hero-mobile-menu__panel">
+              <button
+                ref={mobileMenuCloseButtonRef}
+                className="hero-mobile-menu__close"
+                type="button"
+                onClick={() => closeMobileMenu()}
               >
-                <HoloCard
-                  image={`/cards/card-${index + 1}.jpg`}
-                  alt={`Blackwood House rules card ${index + 1}`}
-                  width={220}
-                  preset="gold"
-                  foilColor="#e8d9b0"
-                  intensity={0.7}
-                  frame={3}
-                  glare={0.45}
-                  edgeSparkle={0.7}
-                  tiltMax={12}
-                  hoverScale={1.06}
-                  radius={6}
-                  idle={true}
-                />
-              </div>
-            ))}
-          </div>
-          <h1>Read the Blackwood House rules</h1>
-          <p className="story-section__intro">
-            Every card reveals another part of the house. Take a closer look
-            before you step inside.
-          </p>
-          <div className="story-section__links">
-            <a id="faq" href="#register">
-              Frequently asked questions
-            </a>
-            <a id="register" href="mailto:hello@blackwood.house">
-              Request an invitation
-            </a>
-          </div>
-        </div>
+                Close
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="m2 2 12 12M14 2 2 14" />
+                </svg>
+              </button>
+              <p className="hero-mobile-menu__eyebrow">Blackwood House</p>
+              <nav className="hero-mobile-menu__links" aria-label="Mobile navigation">
+                <a
+                  href="/rules"
+                  className="hero-mobile-menu__link"
+                  onClick={() => closeMobileMenu(false)}
+                >
+                  <span className="hero-mobile-menu__index">01</span>
+                  <Image
+                    src="/images/navbar/button-1-rules.svg"
+                    alt="Rules"
+                    width={200}
+                    height={100}
+                  />
+                  <span className="hero-mobile-menu__arrow" aria-hidden="true">
+                    <svg viewBox="0 0 16 16">
+                      <path d="M3 13 13 3M5 3h8v8" />
+                    </svg>
+                  </span>
+                </a>
+                <a
+                  href="/rules#faq"
+                  className="hero-mobile-menu__link"
+                  onClick={() => closeMobileMenu(false)}
+                >
+                  <span className="hero-mobile-menu__index">02</span>
+                  <Image
+                    src="/images/navbar/button-2-faq.svg"
+                    alt="FAQ"
+                    width={200}
+                    height={100}
+                  />
+                  <span className="hero-mobile-menu__arrow" aria-hidden="true">
+                    <svg viewBox="0 0 16 16">
+                      <path d="M3 13 13 3M5 3h8v8" />
+                    </svg>
+                  </span>
+                </a>
+                <a
+                  href="/rules#register"
+                  className="hero-mobile-menu__link hero-mobile-menu__link--register"
+                  onClick={() => closeMobileMenu(false)}
+                >
+                  <span className="hero-mobile-menu__index">03</span>
+                  <Image
+                    src="/images/navbar/button-3-register.svg"
+                    alt="Register now"
+                    width={200}
+                    height={100}
+                  />
+                  <span className="hero-mobile-menu__arrow" aria-hidden="true">
+                    <svg viewBox="0 0 16 16">
+                      <path d="M3 13 13 3M5 3h8v8" />
+                    </svg>
+                  </span>
+                </a>
+              </nav>
+              <p className="hero-mobile-menu__footer">A place with a past</p>
+            </div>
+          </div>,
+          menuPortalRoot,
+        )}
+
+      <section className="room-screen" aria-label="The room">
+        <Link className="room-screen__rules" href="/rules">
+          Enter the rules
+        </Link>
       </section>
     </main>
   );
