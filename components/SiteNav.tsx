@@ -108,6 +108,9 @@ export default function SiteNav({
           </span>
         </button>
         <div className="hero-nav__links hero-nav__links--left">
+          <Link className="hero-nav__home" href="/" aria-label="Home">
+            Home
+          </Link>
           <Link href="/rules" aria-label="Rules">
             <Image
               src="/images/navbar/button-1-rules.svg"
@@ -207,6 +210,14 @@ export default function SiteNav({
                 </svg>
               </button>
               <nav className="hero-mobile-menu__links" aria-label="Mobile navigation">
+                <Link
+                  href="/"
+                  className="hero-mobile-menu__link"
+                  aria-label="Home"
+                  onClick={() => closeMobileMenu(false)}
+                >
+                  <MobileMenuText>Home</MobileMenuText>
+                </Link>
                 <Link
                   href="/rules"
                   className="hero-mobile-menu__link"

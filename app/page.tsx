@@ -39,6 +39,7 @@ function LetterSection() {
   const modalActiveRef = useRef(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState<LetterPage>(1);
+  const [showRulesReminder, setShowRulesReminder] = useState(false);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -327,6 +328,8 @@ function LetterSection() {
       return;
     }
 
+    setShowRulesReminder(false);
+
     const bounds = button.getBoundingClientRect();
     openingOriginRef.current = {
       x: bounds.left + bounds.width / 2 - window.innerWidth / 2,
@@ -355,10 +358,12 @@ function LetterSection() {
     const pageTurnTimeline = pageTurnTimelineRef.current;
     if (!openingTimeline || !modalActiveRef.current || closingRef.current) return;
 
+    const completedLetter = currentPage === 2 || (pageTurnTimeline?.progress() ?? 0) > 0;
+
     hintDelayRef.current?.kill();
     gsap.killTweensOf(pageHintRef.current);
     closingRef.current = true;
-    if (currentPage === 2 || (pageTurnTimeline?.progress() ?? 0) > 0) {
+    if (completedLetter) {
       pageTurnTimeline?.pause(0);
       const reducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
@@ -394,13 +399,16 @@ function LetterSection() {
       }
     }
     setCurrentPage(1);
+    if (completedLetter) {
+      setShowRulesReminder(true);
+    }
     if (openingTimeline.progress() === 0) {
       openingTimeline.pause(0);
       finishCloseRef.current?.();
       return;
     }
     openingTimeline.reverse();
-  }, [currentPage, isOpen]);
+  }, [currentPage]);
 
   const turnPageForward = useCallback(() => {
     if (currentPage !== 1) return;
@@ -669,6 +677,44 @@ function LetterSection() {
           </p>
         </div>
       </div>
+
+      {showRulesReminder && (
+        <div
+          className="letter-rules-pop"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="letter-rules-pop-title"
+          onClick={() => setShowRulesReminder(false)}
+        >
+          <div
+            className="letter-rules-pop__card"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <p className="letter-rules-pop__eyebrow">Before you continue</p>
+            <h2 id="letter-rules-pop-title">Check the house rules</h2>
+            <p>
+              You&apos;ve read Judy&apos;s letter. Take a moment to confirm the
+              house rules before you move on.
+            </p>
+            <div className="letter-rules-pop__actions">
+              <button
+                type="button"
+                className="letter-rules-pop__button"
+                onClick={() => setShowRulesReminder(false)}
+              >
+                Continue
+              </button>
+              <Link
+                href="/rules"
+                className="letter-rules-pop__link"
+                onClick={() => setShowRulesReminder(false)}
+              >
+                Read rules
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
