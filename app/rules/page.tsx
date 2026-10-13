@@ -1,13 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import HoloCard from "../../components/HoloCard";
+import SiteNav from "../../components/SiteNav";
 
 export default function RulesPage() {
   const [expandedRule, setExpandedRule] = useState<number | null>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -41,15 +40,6 @@ export default function RulesPage() {
     };
   }, [expandedRule]);
 
-  useEffect(() => {
-    if (!isMenuOpen) return;
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsMenuOpen(false);
-    };
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [isMenuOpen]);
-
   const closeExpandedRule = () => {
     setExpandedRule(null);
     requestAnimationFrame(() => triggerRef.current?.focus());
@@ -57,79 +47,7 @@ export default function RulesPage() {
 
   return (
     <main className="rules-page">
-      <nav className="hero-nav" aria-label="Main navigation">
-        <div className="hero-nav__links hero-nav__links--left">
-          <a href="/rules" aria-label="Rules">
-            <Image
-              src="/images/navbar/button-1-rules.svg"
-              alt="Rules"
-              width={67}
-              height={26}
-              priority
-            />
-          </a>
-          <Link href="/faq" aria-label="Frequently asked questions">
-            <Image
-              src="/images/navbar/button-2-faq.svg"
-              alt="FAQ"
-              width={43}
-              height={28}
-              priority
-            />
-          </Link>
-        </div>
-        <Link
-          className="hero-nav__brand-slot rules-page__brand"
-          href="/"
-          aria-label="Blackwood House home"
-        >
-          <Image
-            src="/images/hero-svg.svg"
-            alt="Blackwood House"
-            width={964}
-            height={127}
-            priority
-          />
-        </Link>
-        <div className="hero-nav__links hero-nav__links--right">
-          <a className="hero-nav__register" href="#register" aria-label="Register now">
-            <Image
-              src="/images/navbar/button-3-register.svg"
-              alt="Register now"
-              width={158}
-              height={58}
-              priority
-            />
-          </a>
-        </div>
-        <button
-          className="rules-page__menu-button"
-          type="button"
-          aria-expanded={isMenuOpen}
-          aria-controls="rules-page-mobile-menu"
-          onClick={() => setIsMenuOpen((open) => !open)}
-        >
-          Menu
-        </button>
-      </nav>
-
-      {isMenuOpen && (
-        <nav
-          className="rules-page__mobile-menu"
-          id="rules-page-mobile-menu"
-          aria-label="Mobile navigation"
-        >
-          <a href="/rules" onClick={() => setIsMenuOpen(false)}>
-            <Image src="/images/navbar/button-1-rules.svg" alt="Rules" width={67} height={26} />
-          </a>
-          <Link href="/faq" onClick={() => setIsMenuOpen(false)}>
-            <Image src="/images/navbar/button-2-faq.svg" alt="FAQ" width={43} height={28} />
-          </Link>
-          <a href="#register" onClick={() => setIsMenuOpen(false)}>
-            <Image src="/images/navbar/button-3-register.svg" alt="Register now" width={158} height={58} />
-          </a>
-        </nav>
-      )}
+      <SiteNav showBrandMark brandHref="/" />
 
       <section className="rules-page__content" aria-labelledby="rules-heading">
         <h1 id="rules-heading">Rules</h1>
