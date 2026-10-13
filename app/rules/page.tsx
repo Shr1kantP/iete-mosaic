@@ -68,7 +68,7 @@ export default function RulesPage() {
               priority
             />
           </a>
-          <a href="#faq" aria-label="Frequently asked questions">
+          <Link href="/faq" aria-label="Frequently asked questions">
             <Image
               src="/images/navbar/button-2-faq.svg"
               alt="FAQ"
@@ -76,7 +76,7 @@ export default function RulesPage() {
               height={28}
               priority
             />
-          </a>
+          </Link>
         </div>
         <Link
           className="hero-nav__brand-slot rules-page__brand"
@@ -122,9 +122,9 @@ export default function RulesPage() {
           <a href="/rules" onClick={() => setIsMenuOpen(false)}>
             <Image src="/images/navbar/button-1-rules.svg" alt="Rules" width={67} height={26} />
           </a>
-          <a href="#faq" onClick={() => setIsMenuOpen(false)}>
+          <Link href="/faq" onClick={() => setIsMenuOpen(false)}>
             <Image src="/images/navbar/button-2-faq.svg" alt="FAQ" width={43} height={28} />
-          </a>
+          </Link>
           <a href="#register" onClick={() => setIsMenuOpen(false)}>
             <Image src="/images/navbar/button-3-register.svg" alt="Register now" width={158} height={58} />
           </a>
