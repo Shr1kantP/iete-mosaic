@@ -1,34 +1,34 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import HoloCard from "../../components/HoloCard";
 
-const rules = Array.from({ length: 5 }, (_, index) => index + 1);
-
 export default function RulesPage() {
   const [expandedRule, setExpandedRule] = useState<number | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const cardButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const expandedRuleRef = useRef(-1);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (expandedRule === null) {
-      cardButtonRefs.current[expandedRuleRef.current]?.focus();
-      return;
-    }
+    if (expandedRule === null) return;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     closeButtonRef.current?.focus();
 
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setExpandedRule(null);
+      if (event.key === "Escape") {
+        setExpandedRule(null);
+        requestAnimationFrame(() => triggerRef.current?.focus());
+      }
     };
     const mobileViewport = window.matchMedia("(max-width: 768px)");
     const closeOnDesktop = () => {
-      if (!mobileViewport.matches) setExpandedRule(null);
+      if (!mobileViewport.matches) {
+        setExpandedRule(null);
+        requestAnimationFrame(() => triggerRef.current?.focus());
+      }
     };
 
     window.addEventListener("keydown", closeOnEscape);
@@ -40,37 +40,110 @@ export default function RulesPage() {
     };
   }, [expandedRule]);
 
-  const openRule = (rule: number) => {
-    if (!window.matchMedia("(max-width: 768px)").matches) return;
-    expandedRuleRef.current = rule - 1;
-    setExpandedRule(rule);
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsMenuOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [isMenuOpen]);
+
+  const closeExpandedRule = () => {
+    setExpandedRule(null);
+    requestAnimationFrame(() => triggerRef.current?.focus());
   };
 
   return (
     <main className="rules-page">
-      <nav className="rules-nav" aria-label="Rules navigation">
-        <Link href="/" className="rules-nav__menu">
+      <nav className="hero-nav" aria-label="Main navigation">
+        <div className="hero-nav__links hero-nav__links--left">
+          <a href="/rules" aria-label="Rules">
+            <Image
+              src="/images/navbar/button-1-rules.svg"
+              alt="Rules"
+              width={67}
+              height={26}
+              priority
+            />
+          </a>
+          <a href="#faq" aria-label="Frequently asked questions">
+            <Image
+              src="/images/navbar/button-2-faq.svg"
+              alt="FAQ"
+              width={43}
+              height={28}
+              priority
+            />
+          </a>
+        </div>
+        <a className="hero-nav__brand-slot rules-page__brand" href="/" aria-label="Blackwood House home">
+          <Image
+            src="/images/hero-svg.svg"
+            alt="Blackwood House"
+            width={964}
+            height={127}
+            priority
+          />
+        </a>
+        <div className="hero-nav__links hero-nav__links--right">
+          <a className="hero-nav__register" href="#register" aria-label="Register now">
+            <Image
+              src="/images/navbar/button-3-register.svg"
+              alt="Register now"
+              width={158}
+              height={58}
+              priority
+            />
+          </a>
+        </div>
+        <button
+          className="rules-page__menu-button"
+          type="button"
+          aria-expanded={isMenuOpen}
+          aria-controls="rules-page-mobile-menu"
+          onClick={() => setIsMenuOpen((open) => !open)}
+        >
           Menu
-        </Link>
+        </button>
       </nav>
 
-      <section className="rules-screen" aria-labelledby="rules-title">
-        <h1 id="rules-title">Rules</h1>
-        <div className="rules-cards" id="faq">
-          {rules.map((rule) => (
-            <div className={`rules-card rules-card--${rule}`} key={rule}>
+      {isMenuOpen && (
+        <nav
+          className="rules-page__mobile-menu"
+          id="rules-page-mobile-menu"
+          aria-label="Mobile navigation"
+        >
+          <a href="/rules" onClick={() => setIsMenuOpen(false)}>
+            <Image src="/images/navbar/button-1-rules.svg" alt="Rules" width={67} height={26} />
+          </a>
+          <a href="#faq" onClick={() => setIsMenuOpen(false)}>
+            <Image src="/images/navbar/button-2-faq.svg" alt="FAQ" width={43} height={28} />
+          </a>
+          <a href="#register" onClick={() => setIsMenuOpen(false)}>
+            <Image src="/images/navbar/button-3-register.svg" alt="Register now" width={158} height={58} />
+          </a>
+        </nav>
+      )}
+
+      <section className="rules-page__content" aria-labelledby="rules-heading">
+        <h1 id="rules-heading">Rules</h1>
+        <div className="rules-page__cards" aria-label="Blackwood House rules cards">
+          {Array.from({ length: 5 }, (_, index) => (
+            <div className={`rules-page__card rules-page__card--${index + 1}`} key={index + 1}>
               <button
-                ref={(element) => {
-                  cardButtonRefs.current[rule - 1] = element;
-                }}
-                className="rules-card__button"
+                className="rules-page__card-trigger"
                 type="button"
-                aria-label={`Open rule ${rule} full screen on mobile`}
-                onClick={() => openRule(rule)}
+                aria-label={`Read rule ${index + 1} full screen`}
+                onClick={(event) => {
+                  if (!window.matchMedia("(max-width: 768px)").matches) return;
+                  triggerRef.current = event.currentTarget;
+                  setExpandedRule(index);
+                }}
               >
                 <HoloCard
-                  image={`/cards/card-${rule}.jpg`}
-                  alt={`Blackwood House rule ${rule}`}
+                  image={`/cards/card-${index + 1}.jpg`}
+                  alt={`Blackwood House rule ${index + 1}`}
                   width={220}
                   preset="gold"
                   foilColor="#e8d9b0"
@@ -81,31 +154,27 @@ export default function RulesPage() {
                   tiltMax={12}
                   hoverScale={1.06}
                   radius={6}
-                  idle
                 />
               </button>
             </div>
           ))}
         </div>
-        <p className="rules-screen__prompt">Click to read the rules</p>
-        <div className="rules-screen__footer">
-          <a href="mailto:hello@blackwood.house" id="register">
+        <p className="rules-page__prompt">Click to read the rules</p>
+        <div className="rules-page__footer">
+          <p id="faq">Every card reveals another part of the house.</p>
+          <a id="register" href="mailto:hello@blackwood.house">
             Request an invitation
           </a>
         </div>
       </section>
 
       {expandedRule !== null && (
-        <div
-          className="expanded-rule"
-          role="presentation"
-          onClick={() => setExpandedRule(null)}
-        >
+        <div className="expanded-rule" role="presentation" onClick={closeExpandedRule}>
           <div
             className="expanded-rule__dialog"
             role="dialog"
             aria-modal="true"
-            aria-label={`Rule ${expandedRule}`}
+            aria-label={`Rule ${expandedRule + 1}`}
             onClick={(event) => event.stopPropagation()}
           >
             <button
@@ -113,7 +182,7 @@ export default function RulesPage() {
               className="expanded-rule__close"
               type="button"
               aria-label="Close expanded rule"
-              onClick={() => setExpandedRule(null)}
+              onClick={closeExpandedRule}
             >
               <svg viewBox="0 0 16 16" aria-hidden="true">
                 <path d="m2 2 12 12M14 2 2 14" />
@@ -121,8 +190,8 @@ export default function RulesPage() {
             </button>
             <Image
               className="expanded-rule__image"
-              src={`/cards/card-${expandedRule}.jpg`}
-              alt={`Blackwood House rule ${expandedRule}`}
+              src={`/cards/card-${expandedRule + 1}.jpg`}
+              alt={`Blackwood House rule ${expandedRule + 1}`}
               width={800}
               height={1200}
               priority

@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { createPortal } from "react-dom";
 import { useEffect, useRef, useState } from "react";
 
@@ -19,7 +18,6 @@ export default function Home() {
   const skyImageFrameRef = useRef<HTMLDivElement>(null);
   const roomRef = useRef<HTMLDivElement>(null);
   const scrollHintRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     setMenuPortalRoot(document.body);
   }, []);
@@ -59,13 +57,8 @@ export default function Home() {
         const wordmarkTarget = () => {
           const stageBounds = stage.getBoundingClientRect();
           const slotBounds = brandSlot.getBoundingClientRect();
-          const wordmarkStyles = window.getComputedStyle(wordmark);
-          const resolvePosition = (value: string, dimension: number) =>
-            value.endsWith("%")
-              ? (Number.parseFloat(value) / 100) * dimension
-              : Number.parseFloat(value);
-          const startCenterX = resolvePosition(wordmarkStyles.left, stageBounds.width);
-          const startCenterY = resolvePosition(wordmarkStyles.top, stageBounds.height);
+          const startCenterX = stageBounds.width / 2;
+          const startCenterY = stageBounds.height * 0.43;
           const targetCenterX =
             slotBounds.left - stageBounds.left + slotBounds.width / 2;
           const targetCenterY =
@@ -212,14 +205,7 @@ export default function Home() {
             setIsMobileMenuOpen((open) => !open);
           }}
         >
-          <span
-            className={`hero-nav__mobile-menu-icon${isMobileMenuOpen ? " is-open" : ""}`}
-            aria-hidden="true"
-          >
-            <span />
-            <span />
-            <span />
-          </span>
+          {isMobileMenuOpen ? "Close" : "Menu"}
         </button>
         <div className="hero-nav__links hero-nav__links--left">
           <a href="/rules" aria-label="Rules">
@@ -243,12 +229,13 @@ export default function Home() {
         </div>
         <div className="hero-nav__brand-slot" ref={brandSlotRef} aria-hidden="true" />
         <div className="hero-nav__links hero-nav__links--right">
+         {/*  <a href="#rules">About game</a> */}
           <a className="hero-nav__register" href="/rules#register" aria-label="Register now">
             <Image
               src="/images/navbar/button-3-register.svg"
               alt="Register now"
-              width={158}
-              height={58}
+              width={200}
+              height={100}
               priority
             />
           </a>
@@ -403,11 +390,7 @@ export default function Home() {
           menuPortalRoot,
         )}
 
-      <section className="room-screen" aria-label="The room">
-        <Link className="room-screen__rules" href="/rules">
-          Enter the rules
-        </Link>
-      </section>
+      <section className="final-room" aria-label="The room" />
     </main>
   );
 }
