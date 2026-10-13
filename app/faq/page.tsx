@@ -38,7 +38,7 @@ const faqs = [
 export default function FAQPage() {
   return (
     <main className="faq-page">
-      <SiteNav showBrandMark />
+      <SiteNav showBrandMark brandHref="/#letter" />
       <section className="faq-screen" aria-labelledby="faq-title">
         <header className="faq-heading">
           <h1 id="faq-title">Questions Before Entry</h1>

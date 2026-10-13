@@ -718,20 +718,23 @@ export default function Home() {
       }
 
       const context = gsap.context(() => {
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
         const wordmarkTarget = () => {
           const stageBounds = stage.getBoundingClientRect();
           const slotBounds = brandSlot.getBoundingClientRect();
           const startCenterX = stageBounds.width / 2;
           const startCenterY = stageBounds.height * 0.43;
-          const targetCenterX =
-            slotBounds.left - stageBounds.left + slotBounds.width / 2;
-          const targetCenterY =
-            slotBounds.top - stageBounds.top + slotBounds.height / 2;
+          const targetCenterX = isMobile
+            ? startCenterX
+            : slotBounds.left - stageBounds.left + slotBounds.width / 2;
+          const targetCenterY = isMobile
+            ? Math.max(100, stageBounds.height * 0.14)
+            : slotBounds.top - stageBounds.top + slotBounds.height / 2;
 
           return {
             x: targetCenterX - startCenterX,
             y: targetCenterY - startCenterY,
-            scale: slotBounds.height / wordmark.offsetHeight,
+            scale: isMobile ? 1 : slotBounds.height / wordmark.offsetHeight,
           };
         };
 
@@ -768,6 +771,7 @@ export default function Home() {
             scrub: 0.15,
             anticipatePin: 1,
             invalidateOnRefresh: true,
+            id: "home-journey",
           },
         });
 
@@ -779,9 +783,9 @@ export default function Home() {
               y: () => wordmarkTarget().y,
               scale: () => wordmarkTarget().scale,
               duration: 1.6,
-              ease: "power2.inOut",
+              ease: isMobile ? "none" : "power2.inOut",
             },
-            0,
+            isMobile ? 1 : 0,
           )
           .to(
             house,
@@ -801,6 +805,7 @@ export default function Home() {
       }, stage);
 
       let refreshFrame = 0;
+      let letterNavigationFrame = 0;
       const refreshForViewportChange = () => {
         cancelAnimationFrame(refreshFrame);
         refreshFrame = requestAnimationFrame(() => ScrollTrigger.refresh());
@@ -808,14 +813,21 @@ export default function Home() {
 
       window.addEventListener("resize", refreshForViewportChange);
       window.visualViewport?.addEventListener("resize", refreshForViewportChange);
-
       cleanup = () => {
         cancelAnimationFrame(refreshFrame);
+        cancelAnimationFrame(letterNavigationFrame);
         window.removeEventListener("resize", refreshForViewportChange);
         window.visualViewport?.removeEventListener("resize", refreshForViewportChange);
         context.revert();
       };
       ScrollTrigger.refresh();
+      if (window.location.hash === "#letter") {
+        letterNavigationFrame = requestAnimationFrame(() => {
+          ScrollTrigger.refresh();
+          const homeTrigger = ScrollTrigger.getById("home-journey");
+          if (homeTrigger) homeTrigger.scroll(homeTrigger.end);
+        });
+      }
     });
 
     return () => {
@@ -826,11 +838,12 @@ export default function Home() {
 
   return (
     <main className="blackwood-page">
-      <SiteNav brandSlotRef={brandSlotRef} />
+      <SiteNav brandSlotRef={brandSlotRef} brandHref="/#letter" />
 
       <section
         className="hero-stage"
         ref={stageRef}
+        id="letter"
         aria-label="Blackwood House"
       >
         <div className="room-layer" ref={roomRef} aria-hidden="true">

@@ -47,7 +47,7 @@ export default function RulesPage() {
 
   return (
     <main className="rules-page">
-      <SiteNav showBrandMark brandHref="/" />
+      <SiteNav showBrandMark brandHref="/#letter" />
 
       <section className="rules-page__content" aria-labelledby="rules-heading">
         <h1 id="rules-heading">Rules</h1>

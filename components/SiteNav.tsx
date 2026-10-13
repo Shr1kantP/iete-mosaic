@@ -11,6 +11,33 @@ type SiteNavProps = {
   showBrandMark?: boolean;
 };
 
+function MobileMenuText({ children }: { children: string }) {
+  const characters = Array.from(children);
+
+  return (
+    <span className="hero-mobile-menu__text-roll" aria-hidden="true">
+      {[false, true].map((isDuplicate) => (
+        <span
+          className={`hero-mobile-menu__text-roll-line${isDuplicate ? " is-duplicate" : ""}`}
+          key={isDuplicate ? "duplicate" : "original"}
+        >
+          {characters.map((character, index) => (
+            <span
+              className="hero-mobile-menu__text-roll-character"
+              key={`${character}-${index}`}
+              style={{
+                transitionDelay: `${Math.abs(index - (characters.length - 1) / 2) * 35}ms`,
+              }}
+            >
+              {character === " " ? "\u00a0" : character}
+            </span>
+          ))}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export default function SiteNav({
   brandSlotRef,
   brandHref,
@@ -72,13 +99,12 @@ export default function SiteNav({
             setIsMobileMenuOpen((open) => !open);
           }}
         >
+          <span>Menu</span>
           <span
-            className={`hero-nav__mobile-menu-icon${isMobileMenuOpen ? " is-open" : ""}`}
+            className={`hero-nav__mobile-menu-symbol${isMobileMenuOpen ? " is-open" : ""}`}
             aria-hidden="true"
           >
-            <span />
-            <span />
-            <span />
+            +
           </span>
         </button>
         <div className="hero-nav__links hero-nav__links--left">
@@ -101,13 +127,29 @@ export default function SiteNav({
             />
           </Link>
         </div>
-        {brandHref ? (
-          <Link
-            className="hero-nav__brand-slot"
-            href={brandHref}
-            aria-label="Blackwood House home"
-          >
-            {showBrandMark && (
+        <div
+          className="hero-nav__brand-slot"
+          ref={brandSlotRef}
+          aria-hidden={!brandHref && !showBrandMark}
+        >
+          {brandHref ? (
+            <a
+              className="hero-nav__brand-link"
+              href={brandHref}
+              aria-label="Blackwood House home"
+            >
+              {showBrandMark && (
+                <Image
+                  src="/images/hero-svg.svg"
+                  alt=""
+                  width={964}
+                  height={127}
+                  priority
+                />
+              )}
+            </a>
+          ) : (
+            showBrandMark && (
               <Image
                 src="/images/hero-svg.svg"
                 alt=""
@@ -115,29 +157,15 @@ export default function SiteNav({
                 height={127}
                 priority
               />
-            )}
-          </Link>
-        ) : (
-          <div
-            className="hero-nav__brand-slot"
-            ref={brandSlotRef}
-            aria-hidden="true"
-          >
-            {showBrandMark && (
-              <Image
-                src="/images/hero-svg.svg"
-                alt=""
-                width={964}
-                height={127}
-                priority
-              />
-            )}
-          </div>
-        )}
+            )
+          )}
+        </div>
         <div className="hero-nav__links hero-nav__links--right">
-          <Link
+          <a
             className="hero-nav__register"
             href="https://mosaic-2k26.vercel.app/#"
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="Register now"
           >
             <Image
@@ -147,7 +175,7 @@ export default function SiteNav({
               height={58}
               priority
             />
-          </Link>
+          </a>
         </div>
       </nav>
 
@@ -178,64 +206,34 @@ export default function SiteNav({
                   <path d="m2 2 12 12M14 2 2 14" />
                 </svg>
               </button>
-              <p className="hero-mobile-menu__eyebrow">Blackwood House</p>
               <nav className="hero-mobile-menu__links" aria-label="Mobile navigation">
                 <Link
                   href="/rules"
                   className="hero-mobile-menu__link"
+                  aria-label="Rules"
                   onClick={() => closeMobileMenu(false)}
                 >
-                  <span className="hero-mobile-menu__index">01</span>
-                  <Image
-                    src="/images/navbar/button-1-rules.svg"
-                    alt="Rules"
-                    width={200}
-                    height={100}
-                  />
-                  <span className="hero-mobile-menu__arrow" aria-hidden="true">
-                    <svg viewBox="0 0 16 16">
-                      <path d="M3 13 13 3M5 3h8v8" />
-                    </svg>
-                  </span>
+                  <MobileMenuText>Rules</MobileMenuText>
                 </Link>
                 <Link
                   href="/faq"
                   className="hero-mobile-menu__link"
+                  aria-label="FAQ"
                   onClick={() => closeMobileMenu(false)}
                 >
-                  <span className="hero-mobile-menu__index">02</span>
-                  <Image
-                    src="/images/navbar/button-2-faq.svg"
-                    alt="FAQ"
-                    width={200}
-                    height={100}
-                  />
-                  <span className="hero-mobile-menu__arrow" aria-hidden="true">
-                    <svg viewBox="0 0 16 16">
-                      <path d="M3 13 13 3M5 3h8v8" />
-                    </svg>
-                  </span>
+                  <MobileMenuText>FAQ</MobileMenuText>
                 </Link>
-                <Link
-                  href="/rules#register"
+                <a
+                  href="https://mosaic-2k26.vercel.app/#"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="hero-mobile-menu__link hero-mobile-menu__link--register"
+                  aria-label="Register now"
                   onClick={() => closeMobileMenu(false)}
                 >
-                  <span className="hero-mobile-menu__index">03</span>
-                  <Image
-                    src="/images/navbar/button-3-register.svg"
-                    alt="Register now"
-                    width={200}
-                    height={100}
-                  />
-                  <span className="hero-mobile-menu__arrow" aria-hidden="true">
-                    <svg viewBox="0 0 16 16">
-                      <path d="M3 13 13 3M5 3h8v8" />
-                    </svg>
-                  </span>
-                </Link>
+                  <MobileMenuText>Register Now</MobileMenuText>
+                </a>
               </nav>
-              <p className="hero-mobile-menu__footer">A place with a past</p>
             </div>
           </div>,
           menuPortalRoot,
