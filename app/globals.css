@@ -430,7 +430,7 @@ a {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  animation: page-loader-scene 4s ease-in-out both;
+  animation: page-loader-scene 7s ease-in-out both;
 }
 
 .page-loader__eyes {
@@ -439,7 +439,7 @@ a {
   display: grid;
   place-items: center;
   animation:
-    page-loader-eyes 4s cubic-bezier(0.2, 0.8, 0.2, 1) both,
+    page-loader-eyes 7s cubic-bezier(0.2, 0.8, 0.2, 1) both,
     page-loader-blink 4s linear both;
 }
 
@@ -457,7 +457,7 @@ a {
   display: block;
   width: min(100vw, 1400px);
   max-height: 74vh;
-  filter: brightness(0.2) contrast(1.1);
+  filter: brightness(0.90) contrast(1.1);
   object-fit: contain;
 }
 
