@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import SiteNav from "../../components/SiteNav";
 
 export const metadata: Metadata = {
-  title: "Questions Before Entry | Blackwood House",
-  description:
-    "Answers to common questions about the Blackwood House paranormal investigation experience.",
+  title: "Questions Before Entry | IETE-MOSIAC WEBSITE",
+  description: "IETE-MOSIAC WEBSITE",
 };
 
 const faqs = [
