@@ -7,11 +7,13 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 
 type SiteNavProps = {
   brandSlotRef?: RefObject<HTMLDivElement | null>;
+  brandHref?: string;
   showBrandMark?: boolean;
 };
 
 export default function SiteNav({
   brandSlotRef,
+  brandHref,
   showBrandMark = false,
 }: SiteNavProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -99,21 +101,39 @@ export default function SiteNav({
             />
           </Link>
         </div>
-        <div
-          className="hero-nav__brand-slot"
-          ref={brandSlotRef}
-          aria-hidden="true"
-        >
-          {showBrandMark && (
-            <Image
-              src="/images/hero-svg.svg"
-              alt=""
-              width={964}
-              height={127}
-              priority
-            />
-          )}
-        </div>
+        {brandHref ? (
+          <Link
+            className="hero-nav__brand-slot"
+            href={brandHref}
+            aria-label="Blackwood House home"
+          >
+            {showBrandMark && (
+              <Image
+                src="/images/hero-svg.svg"
+                alt=""
+                width={964}
+                height={127}
+                priority
+              />
+            )}
+          </Link>
+        ) : (
+          <div
+            className="hero-nav__brand-slot"
+            ref={brandSlotRef}
+            aria-hidden="true"
+          >
+            {showBrandMark && (
+              <Image
+                src="/images/hero-svg.svg"
+                alt=""
+                width={964}
+                height={127}
+                priority
+              />
+            )}
+          </div>
+        )}
         <div className="hero-nav__links hero-nav__links--right">
           <Link
             className="hero-nav__register"

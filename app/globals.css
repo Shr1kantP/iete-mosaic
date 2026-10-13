@@ -140,18 +140,49 @@ a {
 }
 
 .hero-nav__mobile-menu-icon {
-  width: 18px;
+  position: relative;
+  display: block;
+  width: 22px;
   height: 18px;
-  overflow: visible;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-width: 1.25;
-  transition: transform 450ms cubic-bezier(0.65, 0.05, 0, 1);
 }
 
-.hero-nav__mobile-menu-icon.is-open {
+.hero-nav__mobile-menu-icon span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  border-radius: 1px;
+  background: currentColor;
+  transition:
+    top 250ms ease,
+    opacity 150ms ease,
+    transform 250ms ease;
+}
+
+.hero-nav__mobile-menu-icon span:nth-child(1) {
+  top: 3px;
+}
+
+.hero-nav__mobile-menu-icon span:nth-child(2) {
+  top: 8px;
+}
+
+.hero-nav__mobile-menu-icon span:nth-child(3) {
+  top: 13px;
+}
+
+.hero-nav__mobile-menu-icon.is-open span:nth-child(1) {
+  top: 8px;
   transform: rotate(45deg);
+}
+
+.hero-nav__mobile-menu-icon.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hero-nav__mobile-menu-icon.is-open span:nth-child(3) {
+  top: 8px;
+  transform: rotate(-45deg);
 }
 
 .hero-mobile-menu {
@@ -216,6 +247,8 @@ a {
 }
 
 .hero-nav__brand-slot {
+  display: flex;
+  align-items: center;
   width: auto;
   height: 48px;
   aspect-ratio: 964 / 127;
@@ -268,18 +301,6 @@ a {
     linear-gradient(180deg, rgb(5 4 3 / 76%), rgb(5 4 3 / 54%) 46%, rgb(5 4 3 / 88%)),
     url("/images/room.jpg") center / cover fixed,
     #080706;
-}
-
-.rules-page__brand {
-  display: flex;
-  align-items: center;
-}
-
-.rules-page__brand img {
-  display: block;
-  width: auto;
-  height: 48px;
-  object-fit: contain;
 }
 
 .rules-page__content {
@@ -400,7 +421,7 @@ a {
 }
 
 .page-loader.is-visible {
-  opacity: 95%;
+  opacity: 1;
   visibility: visible;
   pointer-events: auto;
 }
@@ -409,7 +430,7 @@ a {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  animation: page-loader-scene 7s ease-in-out both;
+  animation: page-loader-scene 4s ease-in-out both;
 }
 
 .page-loader__eyes {
@@ -436,7 +457,7 @@ a {
   display: block;
   width: min(100vw, 1400px);
   max-height: 74vh;
-  filter: brightness(10) contrast(1.1);
+  filter: brightness(0.2) contrast(1.1);
   object-fit: contain;
 }
 
@@ -883,40 +904,41 @@ a {
   height: 100%;
   padding: 0;
   border: 0;
-  background: rgb(0 0 0 / 62%);
-  opacity: 0;
-  transition: opacity 500ms ease;
-}
-
-.hero-mobile-menu.is-open .hero-mobile-menu__backdrop {
-  opacity: 1;
+  background: transparent;
 }
 
 .hero-mobile-menu__panel {
   position: absolute;
-  inset: 0 0 0 auto;
+  top: 56px;
+  right: 12px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  width: min(88vw, 480px);
-  padding: 88px clamp(28px, 8vw, 48px) 32px;
-  border-left: 1px solid rgb(241 230 202 / 16%);
+  width: min(88vw, 380px);
+  max-height: calc(100dvh - 72px);
+  overflow-y: auto;
+  padding: 56px 24px 22px;
+  border: 1px solid rgb(241 230 202 / 22%);
   background:
     radial-gradient(ellipse at 10% 90%, rgb(118 0 0 / 32%), transparent 48%),
     linear-gradient(145deg, #1b0d0c 0%, #100908 72%);
-  box-shadow: -24px 0 80px rgb(0 0 0 / 40%);
-  transform: translateX(102%);
-  transition: transform 700ms cubic-bezier(0.65, 0.05, 0, 1);
+  box-shadow: 0 20px 56px rgb(0 0 0 / 45%);
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top right;
+  transition:
+    opacity 180ms ease,
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .hero-mobile-menu.is-open .hero-mobile-menu__panel {
-  transform: translateX(0);
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .hero-mobile-menu__close {
   position: absolute;
-  top: 24px;
-  right: clamp(28px, 8vw, 48px);
+  top: 12px;
+  right: 16px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -949,7 +971,7 @@ a {
 }
 
 .hero-mobile-menu__eyebrow {
-  margin: 0 0 28px;
+  margin: 0 0 12px;
 }
 
 .hero-mobile-menu__links {
@@ -962,7 +984,7 @@ a {
   grid-template-columns: 32px 1fr 18px;
   align-items: center;
   gap: 14px;
-  min-height: 84px;
+  min-height: 68px;
   border-top: 1px solid rgb(241 230 202 / 18%);
   color: #f1e6ca;
   transition: padding 250ms ease, color 250ms ease;
@@ -1027,8 +1049,8 @@ a {
 }
 
 .hero-mobile-menu__footer {
-  margin: auto 0 0;
-  padding-top: 28px;
+  margin: 0;
+  padding-top: 18px;
 }
 
 .faq-page {
@@ -1357,7 +1379,7 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-nav__mobile-menu-icon,
+  .hero-nav__mobile-menu-icon span,
   .hero-mobile-menu,
   .hero-mobile-menu__backdrop,
   .hero-mobile-menu__panel,
@@ -1525,40 +1547,8 @@ a {
     background-repeat: no-repeat;
   }
 
-  .rules-page .hero-nav__brand {
+  .rules-page .hero-nav__brand-slot {
     visibility: hidden;
-  }
-
-  .rules-page__menu-button {
-    position: fixed;
-    z-index: 21;
-    top: 0;
-    right: 16px;
-    display: flex;
-    align-items: center;
-    height: 56px;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: #f1e6ca;
-    font: inherit;
-    font-size: 16px;
-    line-height: 1;
-    text-transform: uppercase;
-  }
-
-  .rules-page__mobile-menu {
-    position: fixed;
-    z-index: 22;
-    top: 56px;
-    right: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 12px;
-    padding: 16px;
-    border: 1px solid rgb(241 230 202 / 24%);
-    background: rgb(10 8 7 / 94%);
   }
 
   .faq-screen {
@@ -1590,17 +1580,6 @@ a {
 
   .faq-item__answer {
     padding: 0 10px 20px;
-  }
-
-  .rules-page__mobile-menu img {
-    display: block;
-    width: auto;
-    height: 28px;
-    object-fit: contain;
-  }
-
-  .rules-page__mobile-menu a:last-child img {
-    height: 48px;
   }
 
   .rules-page__content {
