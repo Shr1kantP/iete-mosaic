@@ -269,7 +269,7 @@ a {
 .final-room {
   min-height: 100vh;
   min-height: 100dvh;
-  background: url("/images/room.webp") center / cover no-repeat #080706;
+  background: url("/images/room.jpg") center / cover no-repeat #080706;
 }
 
 .room-screen {
@@ -299,7 +299,7 @@ a {
   color: #f1e6ca;
   background:
     linear-gradient(180deg, rgb(5 4 3 / 76%), rgb(5 4 3 / 54%) 46%, rgb(5 4 3 / 88%)),
-    url("/images/room.webp") center / cover fixed,
+    url("/images/room.jpg") center / cover fixed,
     #080706;
 }
 
@@ -401,6 +401,11 @@ a {
   border-bottom: 1px solid rgb(241 230 202 / 52%);
 }
 
+.rules-page__menu-button,
+.rules-page__mobile-menu {
+  display: none;
+}
+
 .scroll-hint {
   position: absolute;
   z-index: 5;
@@ -436,7 +441,7 @@ a {
   padding: clamp(128px, 19vh, 190px) 24px 96px;
   background:
     linear-gradient(180deg, rgb(17 13 12 / 25%), #110d0c 55%),
-    url("/images/room.webp") center / cover,
+    url("/images/room.jpg") center / cover,
     #110d0c;
   text-align: center;
 }
@@ -1374,7 +1379,7 @@ a {
     background-image:
       linear-gradient(rgb(5 4 3 / 28%), rgb(5 4 3 / 28%)),
       url("/images/the-room-vertical.jpg"),
-      url("/images/room.webp");
+      url("/images/room.jpg");
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -1390,7 +1395,7 @@ a {
     background-image:
       linear-gradient(180deg, rgb(5 4 3 / 72%), rgb(5 4 3 / 55%) 48%, rgb(5 4 3 / 84%)),
       url("/images/the-room-vertical.jpg"),
-      url("/images/room.webp");
+      url("/images/room.jpg");
     background-position: center;
     background-size: cover;
     background-attachment: scroll;
