@@ -117,7 +117,7 @@ export default function SiteNav({
         <div className="hero-nav__links hero-nav__links--right">
           <Link
             className="hero-nav__register"
-            href="/rules#register"
+            href="https://mosaic-2k26.vercel.app/#"
             aria-label="Register now"
           >
             <Image
