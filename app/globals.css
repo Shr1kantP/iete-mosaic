@@ -72,6 +72,10 @@ a {
   transform-origin: 50% 50%;
 }
 
+.room-layer__image--mobile {
+  display: none;
+}
+
 .room-layer__image,
 .sky-layer__image,
 .house-art__mask {
@@ -645,6 +649,8 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
+
   .holo-card {
     transition: none;
   }
@@ -661,8 +667,13 @@ a {
 
 @media (max-width: 640px) {
   .hero-stage {
-    height: 89.2vh;
-    height: 89.2dvh;
+    height: 100vh;
+    height: 100svh;
+    height: 100dvh;
+  }
+
+  .room-layer__image--desktop {
+    display: none;
   }
 
   .sky-layer__frame {
@@ -690,6 +701,16 @@ a {
     top: 50.8%;
     width: min(360px, 92vw);
     max-width: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .room-layer__image--desktop {
+    display: none;
+  }
+
+  .room-layer__image--mobile {
+    display: block;
   }
 }
 
@@ -991,6 +1012,205 @@ a {
   margin: 0;
 }
 
+.letter-section {
+  position: absolute;
+  z-index: 200000;
+  inset: 0;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  pointer-events: auto;
+}
+
+.letter-section__shade {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(0 0 0 / 8%), rgb(0 0 0 / 30%));
+  pointer-events: none;
+}
+
+.letter-envelope-wrap {
+  position: absolute;
+  z-index: 1000;
+  top: 75%;
+  left: 49%;
+  width: 15%;
+  height: 10%;
+  transform-origin: 50% 50%;
+  transition: filter 220ms ease;
+  pointer-events: auto;
+}
+
+.letter-envelope-wrap:hover,
+.letter-envelope-wrap:focus-within {
+  filter: drop-shadow(0 15px 16px rgb(0 0 0 / 38%));
+}
+
+.letter-envelope {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.letter-envelope__image {
+  display: none !important;
+}
+
+.letter-envelope img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.letter-envelope:focus-visible,
+.letter-page:focus-visible,
+.letter-dialog__close:focus-visible {
+  outline: 2px solid #f1e6ca;
+  outline-offset: 6px;
+}
+
+.letter-section__heading {
+  position: absolute;
+  right: 24px;
+  bottom: clamp(64px, 9vh, 96px);
+  left: 24px;
+  z-index: 1;
+  margin: 0;
+  color: #f1e6ca;
+  font-family: Georgia, serif;
+  font-size: clamp(13px, 2vw, 24px);
+  font-weight: normal;
+  line-height: 1;
+  text-align: center;
+  text-shadow: none;
+  -webkit-text-stroke: 0 transparent;
+}
+
+.letter-section__rules {
+  position: absolute;
+  z-index: 1;
+  bottom: 32px;
+  left: clamp(16px, 4vw, 64px);
+  pointer-events: auto;
+}
+
+.letter-overlay {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.letter-overlay[aria-hidden="false"] {
+  pointer-events: auto;
+}
+
+.letter-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 40%);
+}
+
+.letter-dialog {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  outline: none;
+}
+
+.letter-dialog__close {
+  position: absolute;
+  z-index: 5;
+  top: 88px;
+  right: 24px;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgb(241 230 202 / 48%);
+  border-radius: 50%;
+  background: rgb(12 10 9 / 72%);
+  color: #f1e6ca;
+  cursor: pointer;
+}
+
+.letter-dialog__close svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.25;
+}
+
+.letter-page-stage {
+  position: absolute;
+  inset: 0;
+}
+
+.letter-page {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: min(56.6667vh, 600px);
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: #e9dfc9;
+  box-shadow: 0 20px 60px rgb(0 0 0 / 60%);
+  cursor: pointer;
+  will-change: transform;
+}
+
+.letter-page img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.letter-page__shade {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 15%);
+  pointer-events: none;
+}
+
+.letter-page-hint {
+  position: absolute;
+  top: calc(50% + min(42.5vh, 450px) + 14px);
+  left: 50%;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  margin: 0;
+  color: rgb(241 230 202 / 82%);
+  font-family: Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-shadow: 0 2px 8px rgb(0 0 0 / 70%);
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-nav__mobile-menu-icon,
   .hero-mobile-menu,
@@ -999,6 +1219,10 @@ a {
   .hero-mobile-menu__link,
   .hero-mobile-menu__arrow {
     transition-duration: 0.01ms;
+  }
+
+  .letter-envelope-wrap {
+    transition: none;
   }
 }
 
@@ -1047,6 +1271,56 @@ a {
 }
 
 @media (max-width: 768px) {
+  .letter-envelope-wrap {
+    top: 60%;
+    left: 56%;
+    width: 16vw;
+    height: 6vw;
+    margin-top: -3vw;
+    margin-left: -8vw;
+    max-width: none;
+    min-width: 0;
+  }
+
+  .letter-envelope {
+    height: 100%;
+  }
+
+  .letter-envelope img.letter-envelope__image {
+    display: none !important;
+  }
+
+  .letter-section__heading {
+    bottom: 62px;
+    font-size: clamp(22px, 8vw, 38px);
+  }
+
+  .letter-section__rules {
+    bottom: 20px;
+    left: 16px;
+    padding: 10px 14px;
+    font-size: 10px;
+  }
+
+  .letter-dialog {
+    padding: 16px;
+  }
+
+  .letter-dialog__close {
+    top: 68px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .letter-page {
+    width: min(92vw, 420px, 53.3333vh);
+  }
+
+  .letter-page-hint {
+    top: calc(50% + min(40vh, 69vw, 315px) + 12px);
+  }
+
   .hero-nav {
     height: 56px;
     padding: 0 16px;
