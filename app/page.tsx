@@ -50,13 +50,8 @@ export default function Home() {
         const wordmarkTarget = () => {
           const stageBounds = stage.getBoundingClientRect();
           const slotBounds = brandSlot.getBoundingClientRect();
-          const wordmarkStyles = window.getComputedStyle(wordmark);
-          const resolvePosition = (value: string, dimension: number) =>
-            value.endsWith("%")
-              ? (Number.parseFloat(value) / 100) * dimension
-              : Number.parseFloat(value);
-          const startCenterX = resolvePosition(wordmarkStyles.left, stageBounds.width);
-          const startCenterY = resolvePosition(wordmarkStyles.top, stageBounds.height);
+          const startCenterX = stageBounds.width / 2;
+          const startCenterY = stageBounds.height * 0.43;
           const targetCenterX =
             slotBounds.left - stageBounds.left + slotBounds.width / 2;
           const targetCenterY =
@@ -222,7 +217,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="room-screen" aria-label="The room">
+      <section className="room-screen final-room" aria-label="The room">
         <Link className="room-screen__rules" href="/rules">
           Enter the rules
         </Link>
