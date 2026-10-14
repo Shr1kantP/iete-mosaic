@@ -96,10 +96,10 @@ function LetterSection() {
       const imageLeft = (sectionWidth - renderedWidth) / 2;
       const imageTop = (sectionHeight - renderedHeight) / 2;
 
-      envelope.style.left = `${imageLeft + renderedWidth * 0.49}px`;
-      envelope.style.top = `${imageTop + renderedHeight * 0.75}px`;
-      envelope.style.width = `${renderedWidth * 0.15}px`;
-      envelope.style.height = `${renderedHeight * 0.1}px`;
+      envelope.style.left = `${imageLeft + renderedWidth * 0.435}px`;
+      envelope.style.top = `${imageTop + renderedHeight * 0.715}px`;
+      envelope.style.width = `${renderedWidth * 0.25}px`;
+      envelope.style.height = `${renderedHeight * 0.17}px`;
     };
 
     positionDesktopEnvelopeTarget();

@@ -186,23 +186,6 @@ a {
   white-space: nowrap;
 }
 
-.hero-nav__home {
-  color: inherit;
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  transition: opacity 180ms ease;
-}
-
-.hero-nav__home:hover,
-.hero-nav__home:focus-visible {
-  opacity: 0.72;
-}
-
-.hero-nav__home:focus-visible {
-  outline: 1px solid currentColor;
-  outline-offset: 5px;
-}
-
 .hero-nav__links img {
   display: block;
   width: auto;
@@ -1187,7 +1170,7 @@ a {
 
 .letter-section {
   position: absolute;
-  z-index: 200000;
+  z-index: 2147483000;
   inset: 0;
   isolation: isolate;
   width: 100%;
@@ -1207,11 +1190,11 @@ a {
 
 .letter-envelope-wrap {
   position: absolute;
-  z-index: 1000;
-  top: 75%;
-  left: 49%;
-  width: 15%;
-  height: 10%;
+  z-index: 2147483647;
+  top: 71.5%;
+  left: 43.5%;
+  width: 25%;
+  height: 17%;
   transform-origin: 50% 50%;
   transition: filter 220ms ease;
   pointer-events: auto;
@@ -1235,13 +1218,19 @@ a {
 }
 
 .letter-envelope__image {
-  display: none !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: 60%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transform: translate(-50%, -50%);
 }
 
 .letter-envelope img {
   display: block;
-  width: 100%;
-  height: auto;
   pointer-events: none;
 }
 

@@ -108,9 +108,6 @@ export default function SiteNav({
           </span>
         </button>
         <div className="hero-nav__links hero-nav__links--left">
-          <Link className="hero-nav__home" href="/" aria-label="Home">
-            Home
-          </Link>
           <Link href="/rules" aria-label="Rules">
             <Image
               src="/images/navbar/button-1-rules.svg"
