@@ -841,7 +841,7 @@ export default function Home() {
           .to(
             scrollHint,
             { opacity: 0, duration: 0.48, ease: "power2.out" },
-            0,
+            isMobile ? 2.85 : 0,
           )
           .to(house, { scale: 32.5, duration: 1.4, ease: "power2.inOut" }, 1.6)
           .to(sky, { scale: 1.16, opacity: 0, duration: 1.4, ease: "power2.inOut" }, 1.6)
@@ -947,7 +947,7 @@ export default function Home() {
         </div>
 
         <div className="scroll-hint" ref={scrollHintRef} aria-hidden="true">
-          <span>Scroll</span>
+          <span>Scroll down</span>
           <span className="scroll-hint__arrow" />
         </div>
         <LetterSection />

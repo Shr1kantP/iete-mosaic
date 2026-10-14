@@ -15,7 +15,7 @@ const faqs = [
   {
     question: "How long does the experience last?",
     answer:
-      "The experience has four stages, each with an eight-minute time limit. Additional time is required for the initial briefing and transitions.",
+      "The experience has Three stages, with an overall  12-minute time limit. Additional time is required for the initial briefing and initiation.",
   },
   {
     question: "Do we need prior experience?",
@@ -30,7 +30,7 @@ const faqs = [
   {
     question: "What happens if we cannot solve a stage in time?",
     answer:
-      "The stage ends when the timer runs out. A three-minute penalty is added to your team's score, and you move on to the next stage.",
+      "A level not completed remark is added to your team's score on the leaderboard, and you move on to the next stage.",
   },
 ];
 
