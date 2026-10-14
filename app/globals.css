@@ -546,9 +546,22 @@ a {
 }
 
 .scroll-hint__arrow {
+  position: relative;
   width: 1px;
   height: 27px;
   background: currentColor;
+}
+
+.scroll-hint__arrow::after {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  content: "";
+  transform: translateX(-50%) rotate(45deg);
 }
 
 .story-section {
@@ -1483,7 +1496,16 @@ a {
 
 @media (max-width: 640px) {
   .scroll-hint {
-    display: none;
+    z-index: 10;
+    bottom: max(36px, calc(env(safe-area-inset-bottom) + 20px));
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-shadow: 0 1px 6px rgb(0 0 0 / 85%);
+  }
+
+  .scroll-hint__arrow {
+    height: 30px;
   }
 
   .story-section {
