@@ -232,7 +232,7 @@ export default function SiteNav({
                   <MobileMenuText>FAQ</MobileMenuText>
                 </Link>
                 <a
-                  href="https://mosaic-2k26.vercel.app/#"
+                  href="https://mosaic.sfit.ac.in/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hero-mobile-menu__link hero-mobile-menu__link--register"
